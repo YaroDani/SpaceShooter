@@ -30,6 +30,7 @@ font1 = font.Font(None, 30)
 font2 = font.Font(None, 150)
 font3 = font.Font(None, 30)
 font4 = font.Font(None, 30)
+font5 = font.Font(None,30)
 
 font_w = font2.render("YOU WIN", True, (0, 255, 0))
 font_l = font2.render("YOU LOSE", True, (255, 0, 0))
@@ -115,6 +116,22 @@ player = Player("rocket.png", 12, 350, 420, 60, 80)
 asteroids = sprite.Group()
 asteroid = Asteroid("asteroid.png", randint(2, 3), randint(50, 650), 20, 80, 50)
 asteroids.add(asteroid)
+
+def show_menu():
+    menu=True
+    while menu:
+        window.blit(background,(0,0))
+        button_start=font5.render("ПОЧАТИ",1,(255,255,255))
+        window.blit(button_start,(200,200))
+
+        for i in event.get():
+            if i.type == QUIT:
+                menu = False
+            if i.type==KEYDOWN:
+                if i.key==K_KP_ENTER:
+                    menu=False
+if not show_menu():
+    show_menu()
 
 game = True
 finish = False
