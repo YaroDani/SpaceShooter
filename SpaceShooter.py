@@ -57,6 +57,10 @@ class Player(GameSprites):
             self.rect.x += self.speed
         if keys[K_a] and self.rect.x > 0:
             self.rect.x -= self.speed
+        if keys[K_w] and self.rect.y >= 200:
+            self.rect.y -= self.speed
+        if keys[K_s] and self.rect.y <= 400:
+            self.rect.y += self.speed
 
     def fire(self):
         bullet = Bullet("bullet.png",
