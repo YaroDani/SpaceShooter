@@ -1,6 +1,6 @@
 from time import time as timer
 from pygame import *
-from random import randint
+from random import randint, choice
 
 clock = time.Clock()
 FPS = 60
@@ -97,7 +97,10 @@ class Enemy(GameSprites):
         if self.rect.y >= 500:
             lost_monsters += 1
             self.rect.y = 0
-            self.rect.x = randint(50, 650)
+            location=[]
+            for i in range (50,650,30):
+                location.append(i)
+            self.rect.x = choice(location)
 
 
 class Bullet(GameSprites):
