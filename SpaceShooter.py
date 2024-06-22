@@ -145,6 +145,7 @@ def show_menu():
         button_settings = button_paint(50, 180, color_w, "НАЛАШТУВАННЯ", 260, 300,window)
         button_exit = button_paint(50,180,color_w,"ВИХІД",260,360,window)
 
+
         for i in event.get():
             if i.type == QUIT:
                 return False
@@ -156,6 +157,8 @@ def show_menu():
                 if button_exit.collidepoint(mouse_p):
                     game=False
                     return game
+                if button_settings.collidepoint(mouse_p):
+                    pass
 
         display.update()
 game=show_menu()
