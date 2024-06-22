@@ -134,6 +134,22 @@ asteroids = sprite.Group()
 asteroid = Asteroid("asteroid.png", randint(2, 3), randint(50, 650), 20, 80, 50)
 asteroids.add(asteroid)
 
+def show_settings():
+    while True:
+        window.blit(background,(0,0))
+        text_sound=font5.render("Гучність:", 1, (255,255,255))
+        window.blit(text_sound,(280,250))
+        button_exit = button_paint(50, 180, color_w, "ВИХІД", 260, 360, window)
+
+
+        for i in event.get():
+            if i.type == QUIT:
+                return False
+            if i.type == MOUSEBUTTONUP:
+                mouse_p=mouse.get_pos()
+                if button_exit.collidepoint(mouse_p):
+                    return
+        display.update()
 
 def show_menu():
     while True:
@@ -158,13 +174,10 @@ def show_menu():
                     game=False
                     return game
                 if button_settings.collidepoint(mouse_p):
-                    pass
+                    show_settings()
 
         display.update()
 game=show_menu()
-
-
-
 
 
 
