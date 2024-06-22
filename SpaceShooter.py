@@ -7,12 +7,15 @@ FPS = 60
 
 reload = False
 
+
+
 lost_monsters = 0
 killed_monsters = 0
 lives = 3
 color_g = (0, 255, 0)
 color_y = (255, 255, 0)
 color_r = (255, 0, 0)
+color_w=(255,255,255)
 fired = 0
 
 window = display.set_mode((700, 500))
@@ -23,17 +26,31 @@ mixer.init()
 mixer.music.load("ambient.ogg")
 fire_sound = mixer.Sound("bullet_sound.ogg")
 mixer.music.set_volume(0.3)
-mixer.music.play()
+#mixer.music.play()
 
 font.init()
 font1 = font.Font(None, 30)
 font2 = font.Font(None, 150)
 font3 = font.Font(None, 30)
 font4 = font.Font(None, 30)
-font5 = font.Font(None,30)
+font5 = font.Font(None, 30)
 
 font_w = font2.render("YOU WIN", True, (0, 255, 0))
 font_l = font2.render("YOU LOSE", True, (255, 0, 0))
+
+
+
+def button_paint(height,width,color,text,posx,posy,window):
+    button=Rect(posx,posy,width,height)
+    draw.rect(window,color,button,2)
+    draw.rect(window,color,button,2)
+    fontb=font.Font(None,30)
+    fonts=fontb.render(text,1,(255,255,255))
+    font_c=fonts.get_rect(center=button.center)
+    window.blit(fonts, font_c)
+    return button
+
+
 
 
 class GameSprites(sprite.Sprite):
@@ -117,23 +134,37 @@ asteroids = sprite.Group()
 asteroid = Asteroid("asteroid.png", randint(2, 3), randint(50, 650), 20, 80, 50)
 asteroids.add(asteroid)
 
+
 def show_menu():
-    menu=True
-    while menu:
-        window.blit(background,(0,0))
-        button_start=font5.render("ПОЧАТИ",1,(255,255,255))
-        window.blit(button_start,(200,200))
+    while True:
+
+        window.blit(background, (0, 0))
+        text_logo = font5.render("SpaceShooter", 1, (255, 255, 255))
+        window.blit(text_logo, (280, 200))
+        button_start=button_paint(50,180,color_w,"ПОЧАТИ",260,240,window)
+        button_settings = button_paint(50, 180, color_w, "НАЛАШТУВАННЯ", 260, 300,window)
+        button_exit = button_paint(50,180,color_w,"ВИХІД",260,360,window)
 
         for i in event.get():
             if i.type == QUIT:
-                menu = False
-            if i.type==KEYDOWN:
-                if i.key==K_KP_ENTER:
-                    menu=False
-if not show_menu():
-    show_menu()
+                return False
+            if i.type==MOUSEBUTTONUP:
+                mouse_p=mouse.get_pos()
+                if button_start.collidepoint(mouse_p):
+                    game = True
+                    return game
+                if button_exit.collidepoint(mouse_p):
+                    game=False
+                    return game
 
-game = True
+        display.update()
+game=show_menu()
+
+
+
+
+
+
 finish = False
 while game:
     for i in event.get():
