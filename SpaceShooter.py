@@ -103,6 +103,7 @@ class Enemy(GameSprites):
             self.rect.x = choice(location)
 
 
+
 class Bullet(GameSprites):
     global bullets
     global asteroids
