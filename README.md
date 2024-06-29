@@ -9,4 +9,4 @@ dependency:
 pip install pygame
 ```
 
-link google drive...
+link google drive https://drive.google.com/drive/folders/1wkHQSlUOKx_vGQsbmKqpyvRR81hfBwJn?usp=sharing
