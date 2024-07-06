@@ -3,6 +3,7 @@ from time import time as timer
 import pygame
 from pygame import *
 from random import randint, choice
+
 pygame.init()
 
 clock = time.Clock()
@@ -19,16 +20,46 @@ color_r = (255, 0, 0)
 color_w = (255, 255, 255)
 fired = 0
 
-info=display.Info()
-w=info.current_w
-h=info.current_h
-#w=430
-#h=932
+info = display.Info()
+w = info.current_w
+h = info.current_h
+w = 430
+h = 932
 
+if w > h:
+    koef = randint(10, 20)
+    head_dict = {
+        "ast_sizew": int(w / koef),
+        "ast_sizeh": int(h / koef),
+        "rocket_sizew": int(w / 20),
+        "rocket_sizeh": int(h / 10),
+        "monster_sizew": int(w / koef),
+        "monster_sizeh": int(h / koef),
+        "speed_r": 15,
+        "speed_m": 8,
+        "speed_a": 10,
+        "font_size": 10,
+        "koef_b": 4
+    }
+else:
+    koef = randint(8, 10)
+    head_dict = {
+        "ast_sizew": int(w / koef),
+        "ast_sizeh": int(h / koef),
+        "rocket_sizew": int(w / 8),
+        "rocket_sizeh": int(h / 10),
+        "monster_sizew": int(w / 5),
+        "monster_sizeh": int(h / 10),
+        "speed_r": 15,
+        "speed_m": 5,
+        "speed_a": 5,
+        "font_size": 5,
+        "koef_b": 2
+    }
 
-window = display.set_mode((w,h))
+window = display.set_mode((w, h))
 display.set_caption("Шутер")
-background = transform.scale(image.load("galaxy.jpg"), (w,h))
+background = transform.scale(image.load("galaxy.jpg"), (w, h))
 
 mixer.init()
 mixer.music.load("ambient.ogg")
@@ -76,13 +107,13 @@ class GameSprites(sprite.Sprite):
 class Player(GameSprites):
     def update(self):
         keys = key.get_pressed()
-        if keys[K_d] and self.rect.x < w-size_player_w:
+        if keys[K_d] and self.rect.x < w - size_player_w:
             self.rect.x += self.speed
         if keys[K_a] and self.rect.x > 0:
             self.rect.x -= self.speed
-        if keys[K_w] and self.rect.y>=h/1.5:
+        if keys[K_w] and self.rect.y >= h / 1.5:
             self.rect.y -= self.speed
-        if keys[K_s] and self.rect.y<=h-size_player_h:
+        if keys[K_s] and self.rect.y <= h - size_player_h:
             self.rect.y += self.speed
 
     def fire(self):
@@ -92,7 +123,7 @@ class Player(GameSprites):
                         20)
         bullets.add(bullet)
         mixer.music.set_volume(0.3)
-        fire_sound.play()
+        # fire_sound.play()
 
 
 class Enemy(GameSprites):
@@ -104,7 +135,7 @@ class Enemy(GameSprites):
             lost_monsters += 1
             self.rect.y = 0
             location = []
-            for i in range(20, w, size_monster_w+10):
+            for i in range(20, w, size_monster_w + 10):
                 location.append(i)
             self.rect.x = choice(location)
 
@@ -127,26 +158,28 @@ class Asteroid(GameSprites):
         self.rect.y += self.speed
         if self.rect.y >= h:
             self.rect.y = 0
-            self.rect.x = randint(50, w-50)
+            self.rect.x = randint(50, w - 50)
 
 
 monsters = sprite.Group()
 for i in range(1, 6):
-    koef=randint(3,10)
-    size_monster_w=int(w/koef)
-    size_monster_h=int(h/koef)
-    monster = Enemy("ufo.png", randint(2, 4), randint(50, w-50), 20, size_monster_w, size_monster_h)
+    koef = randint(3, 10)
+    size_monster_w = int(w / koef)
+    size_monster_h = int(h / koef)
+    monster = Enemy("ufo.png", randint(3, head_dict["speed_m"]), randint(50, w - 50), 20, head_dict["monster_sizew"],
+                    head_dict["monster_sizeh"])
     monsters.add(monster)
 
 bullets = sprite.Group()
 
-size_player_w=int(w/20)
-size_player_h=int(h/10)
-player = Player("rocket.png", 12, (w/2), h-size_player_h, size_player_w, size_player_h)
-
+size_player_w = int(w / 20)
+size_player_h = int(h / 10)
+player = Player("rocket.png", head_dict["speed_r"], (w / 2), h - head_dict["rocket_sizeh"], head_dict["rocket_sizew"],
+                head_dict["rocket_sizeh"])
 
 asteroids = sprite.Group()
-asteroid = Asteroid("asteroid.png", 10, randint(50, 650), 20, w/koef, h/koef)
+asteroid = Asteroid("asteroid.png", head_dict["speed_a"], randint(50, w - 50), 20, head_dict["ast_sizew"],
+                    head_dict["ast_sizeh"])
 asteroids.add(asteroid)
 
 
@@ -154,8 +187,8 @@ def show_settings():
     while True:
         window.blit(background, (0, 0))
         text_sound = font5.render("Гучність:", 1, (255, 255, 255))
-        window.blit(text_sound, (int(w/2.2), int(h/2-50)))
-        button_exit = button_paint(50, 180, color_w, "ВИХІД", int(w/2.2), int(h/2+55), window)
+        window.blit(text_sound, (int(w / 2.2), int(h / 2 - 50)))
+        button_exit = button_paint(50, 180, color_w, "ВИХІД", int(w / 2.4), int(h / 2 + 55), window)
 
         for i in event.get():
             if i.type == QUIT:
@@ -172,10 +205,15 @@ def show_menu():
 
         window.blit(background, (0, 0))
         text_logo = font5.render("SpaceShooter", 1, (255, 255, 255))
-        window.blit(text_logo, (int(w/2.2), int(h/2-90)))
-        button_start = button_paint(50, 180, color_w, "ПОЧАТИ", int(w/2.2), int(h/2-55), window)
-        button_settings = button_paint(50, 180, color_w, "НАЛАШТУВАННЯ", int(w/2.2), int(h/2), window)
-        button_exit = button_paint(50, 180, color_w, "ВИХІД", int(w/2.2),int(h/2+55), window)
+        window.blit(text_logo, (int(w / 2.8), int(h / 2 - 90)))
+        button_start = button_paint(30 * head_dict["koef_b"], 90 * head_dict["koef_b"], color_w, "ПОЧАТИ",
+                                    int((w - (90 * head_dict["koef_b"])) / 2), int(h / 2 - 31 * head_dict["koef_b"]),
+                                    window)
+        button_settings = button_paint(30 * head_dict["koef_b"], 90 * head_dict["koef_b"], color_w, "НАЛАШТУВАННЯ",
+                                       int((w - (90 * head_dict["koef_b"])) / 2), int(h / 2), window)
+        button_exit = button_paint(30 * head_dict["koef_b"], 90 * head_dict["koef_b"], color_w, "ВИХІД",
+                                   int((w - (90 * head_dict["koef_b"])) / 2), int(h / 2 + 31 * head_dict["koef_b"]),
+                                   window)
 
         for i in event.get():
             if i.type == QUIT:
@@ -210,7 +248,7 @@ while game:
                     reload = True
                     reload_timer1 = timer()
             if i.key == K_ESCAPE:
-                game=False
+                game = False
 
     if not finish:
         koef = randint(4, 10)
@@ -227,7 +265,8 @@ while game:
         collides = sprite.groupcollide(monsters, bullets, True, True)
         for i in collides:
             killed_monsters += 1
-            monster = Enemy("ufo.png", randint(2, 4), randint(50, w - 50), 20, size_monster_w, size_monster_h)
+            monster = Enemy("ufo.png", randint(3, head_dict["speed_m"]), randint(50, w - 50), 20,
+                            head_dict["monster_sizew"], head_dict["monster_sizeh"])
             monsters.add(monster)
         text_killed = font1.render("ЗНИЩЕНІ: " + str(killed_monsters), 1, (0, 255, 0))
         text_lost = font1.render("ПРОПУЩЕНІ: " + str(lost_monsters), 1, (0, 255, 0))
@@ -240,7 +279,7 @@ while game:
             text_lives = font3.render("ЖИТТЯ", 1, (color_y))
         if lives == 1:
             text_lives = font3.render("ЖИТТЯ", 1, (color_r))
-        window.blit(text_lives, (w-100, 20))
+        window.blit(text_lives, (w - 100, 20))
 
         if sprite.spritecollide(player, monsters, False):
             sprite.spritecollide(player, monsters, True)
@@ -248,9 +287,9 @@ while game:
 
         if reload == True:
             reload_timer2 = timer()
-            if (reload_timer2 - reload_timer1) < 2:
+            if (reload_timer2 - reload_timer1) < 1.5:
                 font_r = font4.render("ПЕРЕЗАРЯДКА", 1, (color_r))
-                window.blit(font_r, (int(w/2.2), h-size_player_h))
+                window.blit(font_r, (int(w / 2.2), h - size_player_h))
             else:
                 reload = False
                 fired = 0
@@ -260,11 +299,11 @@ while game:
             asteroid.automove()
 
         if killed_monsters >= 10:
-            window.blit(font_w, (int(w/2.4), int(h/2)))
+            window.blit(font_w, (int(w / 2.4), int(h / 2)))
             finish = True
 
         if lost_monsters >= 10 or sprite.spritecollide(player, asteroids, False) or lives <= 0:
-            window.blit(font_l, (int(w/2.4), int(h/2)))
+            window.blit(font_l, (int(w / 2.4), int(h / 2)))
             finish = True
 
     clock.tick(FPS)
