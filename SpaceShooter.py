@@ -27,7 +27,7 @@ w = 430
 h = 932
 
 if w > h:
-    koef = randint(10, 20)
+    koef = randint(10, 14)
     head_dict = {
         "ast_sizew": int(w / koef),
         "ast_sizeh": int(h / koef),
@@ -38,7 +38,7 @@ if w > h:
         "speed_r": 15,
         "speed_m": 8,
         "speed_a": 10,
-        "font_size": 10,
+        "font_size": 100,
         "koef_b": 4
     }
 else:
@@ -53,8 +53,8 @@ else:
         "speed_r": 15,
         "speed_m": 5,
         "speed_a": 5,
-        "font_size": 5,
-        "koef_b": 2
+        "font_size": 45,
+        "koef_b": 3
     }
 
 window = display.set_mode((w, h))
@@ -67,22 +67,27 @@ fire_sound = mixer.Sound("bullet_sound.ogg")
 mixer.music.set_volume(0.3)
 # mixer.music.play()
 
+
 font.init()
 font1 = font.Font(None, 30)
 font2 = font.Font(None, 70)
 font3 = font.Font(None, 30)
 font4 = font.Font(None, 30)
-font5 = font.Font(None, 30)
+font5 = font.Font(None, head_dict["font_size"])
 
 font_w = font2.render("YOU WIN", True, (0, 255, 0))
 font_l = font2.render("YOU LOSE", True, (255, 0, 0))
+text_logo = font5.render("SpaceShooter", 1, (255, 255, 255))
 
+
+text_rect = font_w.get_rect(center=(w/2, h/2))
+logo_rect = text_logo.get_rect(center=(w/2, h*0.1))
 
 def button_paint(height, width, color, text, posx, posy, window):
     button = Rect(posx, posy, width, height)
     draw.rect(window, color, button, 2)
     draw.rect(window, color, button, 2)
-    fontb = font.Font(None, 30)
+    fontb = font.Font(None, 45)
     fonts = fontb.render(text, 1, (255, 255, 255))
     font_c = fonts.get_rect(center=button.center)
     window.blit(fonts, font_c)
@@ -204,8 +209,7 @@ def show_menu():
     while True:
 
         window.blit(background, (0, 0))
-        text_logo = font5.render("SpaceShooter", 1, (255, 255, 255))
-        window.blit(text_logo, (int(w / 2.8), int(h / 2 - 90)))
+        window.blit(text_logo, logo_rect)
         button_start = button_paint(30 * head_dict["koef_b"], 90 * head_dict["koef_b"], color_w, "ПОЧАТИ",
                                     int((w - (90 * head_dict["koef_b"])) / 2), int(h / 2 - 31 * head_dict["koef_b"]),
                                     window)
@@ -299,11 +303,11 @@ while game:
             asteroid.automove()
 
         if killed_monsters >= 10:
-            window.blit(font_w, (int(w / 2.4), int(h / 2)))
+            window.blit(font_w,text_rect)
             finish = True
 
         if lost_monsters >= 10 or sprite.spritecollide(player, asteroids, False) or lives <= 0:
-            window.blit(font_l, (int(w / 2.4), int(h / 2)))
+            window.blit(font_l, text_rect)
             finish = True
 
     clock.tick(FPS)
